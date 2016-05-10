@@ -1,0 +1,112 @@
+num(-1).
+num(0).
+num(1).
+
+
+start:-
+    X1=1,
+    Y1=1,
+    XF=6,
+    YF=5,
+    Mapa =[[#, # , # , # , # , # , # , # , # , # ],
+    [#,' ', # ,' ',' ', # ,' ',' ',' ', # ],
+    [#,' ', # ,' ',' ', # ,' ',' ', # , # ],
+    [#,' ',' ',' ',' ', # ,' ', # , # , # ],
+    [#,' ', # ,' ',' ',' ',' ',' ',' ', # ],
+    [#,' ', # ,' ', # , # ,' ', # ,' ', # ],
+    [#,' ',' ',' ',' ',' ',' ', # ,' ', # ],
+    [#,' ',' ', # , # , # ,' ',' ',' ', # ],
+    [#,' ',' ', # , # ,' ',' ',' ',' ', # ],
+    [#, # , # , # , # , # , # , # , # , # ]],
+    ande(X1,Y1,Mapa).
+
+
+ande(X1,Y1,Mapa):-
+        write('\n'),
+        acessa(Mapa,X1,Y1,R),% recebe o valor R do acessa
+        verifica(X1,Y1,GO,R),%verifica se R e uma casa livre
+        GO==1,%se for livre retorna 1 e continua
+        modifica(Mapa,X1,Y1,x,[],MapaModificado),% aqui ele modifica pelo caractere desejado
+        writef('Modificando a posicao (%w,%w), que antes tinha %w, por x:\n',[X1,Y1,X]),
+        imprime(MapaModificado),
+        dadosatual(X1,Y1,XF,YF,PA,Mapamodificado).%atualiza as posicoes e o mapa
+
+
+  mudalinha([],Xq,_,R,[R]).
+
+mudalinha([M|T],0,L,V,R):-
+        append(V,[L],Vo),
+        mudalinha(T,-1,L,Vo,R).
+
+mudalinha([M|T],X,L,V,R):-
+        X \== 0,
+        Xo is X - 1,
+        append(V,[M],Vo),
+        mudalinha(T,Xo,L,Vo,R).
+
+modifica([],_,Yq,_,R,R).
+
+
+
+modifica([M|T],X,0,L,V,R):-   % quando y zerar ele entra aqui e vai indo de elemento a elemento  da linha desejada
+         mudalinha(M,X,L,[],Mo),
+         append(V,Mo,Vo),
+         modifica(T,X,-1,L,Vo,R).
+
+modifica([M|T],X,Y,L,V,R):-% m uma linha e o t 9 / l um elemento a ser colocado/ r o resultado.
+         Y \== 0,
+         Yo is Y-1,
+         append(V,[M],Vo),
+         modifica(T,X,Yo,L,Vo,R).% vo vai acumulando.
+
+acessa(M,X,Y,R):-
+         nth0(Y,M,L), % acessa  s linha toda
+         nth0(X,L,R). % acessa um componente da linha 'l ' que foi acessada no nth0 anterior caso coluna
+
+
+
+
+caminho(X1,Y1):-
+    num(N1),
+    num(N2),
+    N1\==N2,
+    X2 is X1+N1,
+    Y2 is Y1+N2,
+    ande(X2,Y2,Mapa).
+
+verifica(X1,Y1,GO,R):-
+     R==x,
+     R==#,
+     caminho(X1,Y1).
+
+verifica(X1,Y1,GO,R):-
+    %acesso(X2,Y2,R),
+     R \==x,
+     R \==#.
+     GO==1.
+
+
+ dadosatual(X1,Y1,X2,Y2,GO,Mapamodificado):-
+        X1==XF,
+        Y1==YF,
+        writeln('voce chegou'),
+        !. % a ideia e que qnd ele chegar aqui pare.
+
+dadosatual(X1,Y1,XF,YF,PA,Mapamodificado):-
+          X1\==XF,
+          Y1\==YF
+          caminho(X1,Y1).
+
+
+imprime([]).
+
+imprime([M|T]):-
+        imprimelinha(M),
+        write('\n'),
+        imprime(T).
+
+imprimelinha([]).
+
+imprimelinha([L|T]):-
+          write(L),
+          imprimelinha(T).
