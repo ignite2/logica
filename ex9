@@ -1,0 +1,52 @@
+start:-
+    Mapa = [[a,b,c,d],
+            [e,f,g,h],
+            [i,j,k,l],
+            [m,n,o,p]],
+    writeln('Mapa antes: '),
+    imprime(Mapa),
+    write('\n'),
+    acessa(Mapa,2,3,X),
+    modifica(Mapa,2,3,r,[],MapaModificado),
+    writef('Modificando a posicao (2,3), que antes tinha %w, por r:\n',[X]),
+    imprime(MapaModificado).
+
+mudalinha([],_,_,R,[R]).
+
+mudalinha([M|T],0,L,V,R):-
+    append(V,[L],Vo),
+    mudalinha(T,-1,L,Vo,R).
+
+mudalinha([M|T],X,L,V,R):-
+    X \== 0,
+    Xo is X - 1,
+    append(V,[M],Vo),
+    mudalinha(T,Xo,L,Vo,R).
+
+modifica([],_,_,_,R,R).
+
+modifica([M|T],X,0,L,V,R):-
+    mudalinha(M,X,L,[],Mo),
+    append(V,Mo,Vo),
+    modifica(T,X,-1,L,Vo,R).
+
+modifica([M|T],X,Y,L,V,R):-
+    Y \== 0,
+    Yo is Y-1,
+    append(V,[M],Vo),
+    modifica(T,X,Yo,L,Vo,R).
+
+acessa(M,X,Y,R):-
+    nth0(Y,M,L),
+    nth0(X,L,R).
+
+imprime([]).
+imprime([M|T]):-
+    imprimelinha(M),
+    write('\n'),
+    imprime(T).
+
+imprimelinha([]).
+imprimelinha([L|T]):-
+    write(L),
+    imprimelinha(T).
