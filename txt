@@ -1,0 +1,24 @@
+Revertendo uma lista
+
+    Para a reversao de uma lista e' necessario conhecimente sobre o append/3, que e' muito importante. O prolog facilita bastante este medotodo por conta do facil acesso as listas. Distacam-se dois metodos, o navie reverse e usando um acumulador...
+
+>Naive reverse:
+    Se da gracas ao backtraking, baseando-se em um lista [H|T], obtem-se pelo reverso do resto ta lista (T) e a concatenacao do [H].
+
+  * Exemplo: lista [1,2,3,4,5] revertendo o tail da lista fica [5,4,3,2] e unindo com o [1], finalmente fica [5,4,3,2,1].
+  * E' eficiente, porem e' impressionantemente trabalhoso.
+  * Passa "muito" tempo para realizar os appends.
+
+[trace]
+
+>Usando um acumulador:
+    E' o melhor metodo para reverter listar. O acumulador sera uma lista que, antes de comecar o processo de reverter, estara vazia. Pega-se a cabeca da lista origem, que se quer reverter, e se adiciona a cabeca da lista do acumulador, isto ate a lista origem ficar vazia. O prolog tendo feito esse procedimento, tera' o acumulador com a lista origem, sendo que invertida, que e' o que se deseja. :)
+
+    * Exemplo: lista [1,2,3,4,5] acc[]
+               lista [2,3,4,5]   acc[1]
+               lista [3,4,5]     acc[2,1]
+               ...               ...
+               lista []          acc[5,4,3,2,1]
+    * Seu uso e' muitas vezes melhor.
+
+[trace]
