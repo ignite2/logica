@@ -1,0 +1,15 @@
+:-use_module(library(arithmetic)).
+  2 :-arithmetic_function(fat/1).
+  3 :- op(300,yf,fat).
+  4
+  5 fat(X,R):-
+  6      fat1(X,R).
+  7
+  8 fat1(0,1):-!.
+  9
+ 10 fat1(N,R):-
+ 11         N>0,
+ 12         M is N-1,
+ 13         fat1(M,S),
+ 14         R is N*S.
+ 15
