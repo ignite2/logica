@@ -1,0 +1,114 @@
+num(-1).
+num(0).
+num(1).
+
+
+start:-
+    X1=1,
+    Y1=1,
+    XF=6,
+    YF=5,
+    Mapa =[[#, # , # , # , # , # , # , # , # , # ],
+    [#,' ', # ,' ',' ', # ,' ',' ',' ', # ],
+    [#,' ', # ,' ',' ', # ,' ',' ', # , # ],
+    [#,' ',' ',' ',' ', # ,' ', # , # , # ],
+    [#,' ', # ,' ',' ',' ',' ',' ',' ', # ],
+    [#,' ', # ,' ', # , # ,' ', # ,' ', # ],
+    [#,' ',' ',' ',' ',' ',' ', # ,' ', # ],
+    [#,' ',' ', # , # , # ,' ',' ',' ', # ],
+    [#,' ',' ', # , # ,' ',' ',' ',' ', # ],
+    [#, # , # , # , # , # , # , # , # , # ]],
+    ande(X1,Y1,XF,YF,Mapa).
+
+
+ande(X1,Y1,XF,YF,Mapa):-
+    writef('o valor de x1:%w',[X1]),
+    acessa(Mapa,X1,Y1,R),
+    writeln('2'),
+    verifica(X1,Y1,GO,R),
+    writeln('3'),
+    GO==1,
+    modifica(Mapa,X1,Y1,x,[],MapaModificado),
+    writef('Modificando a posicao (%w,%w), que antes tinha %w, por x:\n',[X1,Y1,X]),
+    imprime(MapaModificado),
+    dadosatual(X1,Y1,XF,YF,PA,Mapamodificado).
+
+
+mudalinha([],_,_,R,[R]).
+                                                                                            mudalinha([M|T],0,L,V,R):-
+                                                                                                append(V,[L],Vo),
+                                                                                                mudalinha(T,-1,L,Vo,R).
+
+                                                                                            mudalinha([M|T],X,L,V,R):-
+                                                                                                X \== 0,
+                                                                                                Xo is X - 1,
+                                                                                                append(V,[M],Vo),
+                                                                                                mudalinha(T,Xo,L,Vo,R).
+
+                                                                                            modifica([],_,Yq,_,R,R).
+
+
+
+                                                                                        modifica([M|T],X,0,L,V,R):-
+                                                                                            mudalinha(M,X,L,[],Mo),
+                                                                                            append(V,Mo,Vo),
+                                                                                            modifica(T,X,-1,L,Vo,R).
+
+                                                                                        modifica([M|T],X,Y,L,V,R):-
+                                                                                            Y \== 0,
+                                                                                            Yo is Y-1,
+                                                                                            append(V,[M],Vo),
+                                                                                            modifica(T,X,Yo,L,Vo,R).
+
+                                                                                        acessa(M,X1,Y1,R):-
+                                                                                            nth0(Y,M,L),
+                                                                                            nth0(X,L,R),
+                                                                                            writef('%w',[R]).
+
+
+
+                                                                                        caminho(X1,Y1):-
+                                                                                            num(N1),
+                                                                                            num(N2),
+                                                                                            N1\==N2,
+                                                                                            X2 is X1+N1,
+                                                                                            Y2 is Y1+N2,
+                                                                                            ande(X2,Y2,Mapa).
+
+                                                                                        verifica(X1,Y1,GO,R):-
+                                                                                            R==x,
+                                                                                            caminho(X1,Y1).
+                                                                                        verifica(X1,Y1,GO,R):-
+                                                                                            R==#,
+                                                                                            caminho(X1,Y1).
+
+                                                                                        verifica(X1,Y1,GO,R):-
+                                                                                            R \==x,
+                                                                                            R \==#,
+                                                                                            GO==1.
+
+
+                                                                                        dadosatual(X1,Y1,X2,Y2,GO,Mapamodificado):-
+                                                                                            X1==XF,
+                                                                                            Y1==YF,
+                                                                                            writeln('voce chegou'),
+                                                                                            !.
+
+                                                                                        dadosatual(X1,Y1,XF,YF,PA,Mapamodificado):-
+                                                                                            X1\==XF,
+                                                                                            Y1\==YF
+                                                                                            caminho(X1,Y1).
+
+
+                                                                                        imprime([]).
+
+                                                                                    imprime([M|T]):-
+                                                                                        imprimelinha(M),
+                                                                                        write('\n'),
+                                                                                        imprime(T).
+
+                                                                                    imprimelinha([]).
+
+                                                                                imprimelinha([L|T]):-
+                                                                                    write(L),
+                                                                                    imprimelinha(T).
