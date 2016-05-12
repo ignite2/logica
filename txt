@@ -1,24 +1,65 @@
 Revertendo uma lista
 
-    Para a reversao de uma lista e' necessario conhecimente sobre o append/3, que e' muito importante. O prolog facilita bastante este medotodo por conta do facil acesso as listas. Distacam-se dois metodos, o navie reverse e usando um acumulador...
+    Para a reversao de uma lista e' necessario conhecimente sobre o append/3, que que concatena duas listas diferentes em uma so'. O prolog facilita bastante este medotodo por conta do facil acesso as listas. Distacam-se dois metodos, o navie reverse e usando um acumulador...
 
 >Naive reverse:
     Se da gracas ao backtraking, baseando-se em um lista [H|T], obtem-se pelo reverso do resto ta lista (T) e a concatenacao do [H].
 
-  * Exemplo: lista [1,2,3,4,5] revertendo o tail da lista fica [5,4,3,2] e unindo com o [1], finalmente fica [5,4,3,2,1].
-  * E' eficiente, porem e' impressionantemente trabalhoso.
-  * Passa "muito" tempo para realizar os appends.
+    * Exemplo: lista [1,2,3,4,5] revertendo o tail da lista fica [5,4,3,2] e unindo com o [1], finalmente fica [5,4,3,2,1].
+    * E' eficiente, porem e' impressionantemente trabalhoso.
+    * Passa "muito" tempo para realizar os appends.
 
-[trace]
+[trace]  ?- naiveInverte([1,2,3,4,5],X).
+Call: (6) naiveInverte([1, 2, 3, 4, 5], _G353) ? creep
+Call: (7) naiveInverte([2, 3, 4, 5], _G441) ? creep
+Call: (8) naiveInverte([3, 4, 5], _G441) ? creep
+Call: (9) naiveInverte([4, 5], _G441) ? creep
+Call: (10) naiveInverte([5], _G441) ? creep
+Call: (11) naiveInverte([], _G441) ? creep
+Exit: (11) naiveInverte([], []) ? creep
+Call: (11) lists:append([], [5], _G445) ? creep
+Exit: (11) lists:append([], [5], [5]) ? creep
+Exit: (10) naiveInverte([5], [5]) ? creep
+Call: (10) lists:append([5], [4], _G448) ? creep
+Exit: (10) lists:append([5], [4], [5, 4]) ? creep
+Exit: (9) naiveInverte([4, 5], [5, 4]) ? creep
+Call: (9) lists:append([5, 4], [3], _G454) ? creep
+Exit: (9) lists:append([5, 4], [3], [5, 4, 3]) ? creep
+Exit: (8) naiveInverte([3, 4, 5], [5, 4, 3]) ? creep
+Call: (8) lists:append([5, 4, 3], [2], _G463) ? creep
+Exit: (8) lists:append([5, 4, 3], [2], [5, 4, 3, 2]) ? creep
+Exit: (7) naiveInverte([2, 3, 4, 5], [5, 4, 3, 2]) ? creep
+Call: (7) lists:append([5, 4, 3, 2], [1], _G353) ? creep
+Exit: (7) lists:append([5, 4, 3, 2], [1], [5, 4, 3, 2, 1]) ? creep
+Exit: (6) naiveInverte([1, 2, 3, 4, 5], [5, 4, 3, 2, 1]) ? creep
+X = [5, 4, 3, 2, 1].
+
 
 >Usando um acumulador:
-    E' o melhor metodo para reverter listar. O acumulador sera uma lista que, antes de comecar o processo de reverter, estara vazia. Pega-se a cabeca da lista origem, que se quer reverter, e se adiciona a cabeca da lista do acumulador, isto ate a lista origem ficar vazia. O prolog tendo feito esse procedimento, tera' o acumulador com a lista origem, sendo que invertida, que e' o que se deseja. :)
+    E' o melhor metodo para reverter listas. O acumulador sera uma lista que, antes de comecar o processo de reverter, estara vazia. Pega-se a cabeca da lista origem, que se quer reverter, e se adiciona a cabeca da lista do acumulador, isto ate a lista origem ficar vazia. O prolog tendo feito esse procedimento, tera' o acumulador com a lista origem, sendo que invertida, que e' o que se deseja. :)
 
     * Exemplo: lista [1,2,3,4,5] acc[]
-               lista [2,3,4,5]   acc[1]
-               lista [3,4,5]     acc[2,1]
-               ...               ...
-               lista []          acc[5,4,3,2,1]
+    lista [2,3,4,5]   acc[1]
+    lista [3,4,5]     acc[2,1]
+    ...               ...
+    lista []          acc[5,4,3,2,1]
     * Seu uso e' muitas vezes melhor.
 
-[trace]
+[trace]  ?- accInverte([1,2,3,4,5],[],X).
+Call: (6) accInverte([1, 2, 3, 4, 5], [], _G2761) ? creep
+Call: (7) accInverte([2, 3, 4, 5], [1], _G2761) ? creep
+Call: (8) accInverte([3, 4, 5], [2, 1], _G2761) ? creep
+Call: (9) accInverte([4, 5], [3, 2, 1], _G2761) ? creep
+Call: (10) accInverte([5], [4, 3, 2, 1], _G2761) ? creep
+Call: (11) accInverte([], [5, 4, 3, 2, 1], _G2761) ? creep
+Exit: (11) accInverte([], [5, 4, 3, 2, 1], [5, 4, 3, 2, 1]) ? creep
+Exit: (10) accInverte([5], [4, 3, 2, 1], [5, 4, 3, 2, 1]) ? creep
+Exit: (9) accInverte([4, 5], [3, 2, 1], [5, 4, 3, 2, 1]) ? creep
+Exit: (8) accInverte([3, 4, 5], [2, 1], [5, 4, 3, 2, 1]) ? creep
+Exit: (7) accInverte([2, 3, 4, 5], [1], [5, 4, 3, 2, 1]) ? creep
+Exit: (6) accInverte([1, 2, 3, 4, 5], [], [5, 4, 3, 2, 1]) ? creep
+X = [5, 4, 3, 2, 1].
+
+OBS.:
+*Usando o trace fica muito claro a difenreca entre os dois*
+*As duas formas estao no ex10.pl, uma de maneira mais personalizada*
