@@ -1,40 +1,132 @@
-1 Explicando duas formas distintas de inverter uma lista e qual a vantagem de uma sobre a outra.
-  2
-  3 Primeiramente, vou ilustrar as duas formas.
-  4
-  5 forma1:
-  6
-  7 invertelista([],[]).
-  8 invertelista([H|T],R):-
-  9     invertelista(T,RT),
- 10     append(RT,[H],R).
- 11
- 12
- 13     Forma2:
- 14     invertelista2([ ],L,L).
- 15     invertelista2([H|T],Acc,Rev):-
- 16         invertelista2(T,[H|Acc],Rev).
- 17
- 18
- 19         Observe que no primeiro caso se faz o usa a funcao append   que concatena duas listas diferentes em uma so.
- 20
- 21         o trace da 1 forma.
- 22           primeiro passo ele vai "arrancando" o primeiro elemento da lista
- 23
- 24         ?- invertelista([a,b,c],X).
- 25         Call: (6) invertelista([a, b, c], _G347) ? creep na  primeira  instancia  H= a  e T=[b,c]
- 26         Call: (7) invertelista([b, c], _G429) ? creep  recursivamente, ele "chama " a funcao de novo so que com T .Como ele chamou somente com o T
- 27         o primeiro elemento de T no caso o H de T e b  portanto na segunda instancia H=b e T=c
- 28         Call: (8) invertelista([c], _G429) ? creep  e do mesmo modo na 3 instancia  H =c e T=[]
- 29         Call: (9) invertelista([], _G429) ? creep como T esta vazio ai nos atingimos o nosso criterio de parada e ai partimos pro append
- 30         Exit: (9) invertelista([], []) ? creep  criterio de parada
- 31         Call: (9) lists:append([], [c], _G433) ? creep   noa append ele comeca concatenado a 3 instancia, ele concatena o H=c e t=[C]
- 32         Exit: (9) lists:append([], [c], [c]) ? creep Desse modo Rev passa a ser [c]
- 33         Exit: (8) invertelista([c], [c]) ? creep E ai ele une rev com R da 3 instancia. Depois ele vai fazer o mesmo com as instancias seguintes.
- 34         Call: (8) lists:append([c], [b], _G436) ? creep Na 2 instancia ele concaten o H que nessa instancia temo valor de b com o T que tera o valor de c
- 35         Exit: (8) lists:append([c], [b], [c, b]) ? creep Rev une com o ja concatenado [c,b].
- 36         Exit: (7) invertelista([b, c], [c, b]) ? creep  E depois une rev com R da 2 instancia
- 37         Call: (7) lists:append([c, b], [a], _G347) ? creep E por ultimo na 1 instancia  ele concatena H=a e T =[c,b].
- 38         Exit: (7) lists:append([c, b], [a], [c, b, a]) ? creep e Rev passa ter valor de [c,b,a].
- 39         Exit: (6) invertelista([a, b, c], [c, b, a]) ? creep E une rev com o R da 1 instancia.
- 40         X = [c, b, a]. E une R que ja possui a resposta com X que foi usado para obter a resposta da lista invertida
+Primeiramente, vou ilustrar as duas formas.
+
+forma1:
+
+invertelista([],[]).
+invertelista([H|T],R):-
+    invertelista(T,RT),
+    append(RT,[H],R).
+
+
+    Forma2:
+    invertelista2([ ],L,L).
+    invertelista2([H|T],Acc,Rev):-
+        invertelista2(T,[H|Acc],Rev).
+
+Vamos inverter a lista [a,b,c].
+
+Observe que no primeiro caso se faz o usa a funcao append   que concatena duas listas diferentes em uma so.
+
+o trace da  forma 1.
+código:
+invertelista([],[]).
+invertelista([H|T],R):-
+    invertelista(T,RT),
+    append(RT,[H],R).
+
+Primeiro passo ele vai "arrancando" o primeiro elemento da lista
+
+?- invertelista([a,b,c],X).
+Call: (6) invertelista([a, b, c], _G347) ? creep
+1-Na  primeira  instancia  H= a  e T=[b,c]
+
+Call: (7) invertelista([b, c], _G429) ? creep
+2- Recursivamente, ele "chama " a regra de novo so que com T .Como ele chamou somente com o T
+o primeiro elemento de T no caso o H de T é b,  portanto na segunda instancia H=b e T=c
+
+Call: (8) invertelista([c], _G429) ? creep
+3-E do mesmo modo na 3 instancia  H =c e T=[]
+
+Call: (9) invertelista([], _G429) ? creep
+4-Como T esta vazio ai nos atingimos o nosso criterio de parada e ai partimos pro append
+
+
+Exit: (9) invertelista([], []) ? creep
+5- Criterio de parada
+
+Call: (9) lists:append([], [c], _G433) ? creep
+6-No append ele comeca concatenado a 3 instancia, ele concatena o H=c e t=[C]
+
+Exit: (9) lists:append([], [c], [c]) ? creep
+7-Desse modo Rev passa a ser [c]
+
+Exit: (8) invertelista([c], [c]) ? creep
+8-E ai ele une rev com R da 3 instancia. Depois ele vai fazer o mesmo com as instancias seguintes.
+
+Call: (8) lists:append([c], [b], _G436) ?
+
+9- Na 2 instancia ele concaten o H que nessa instancia temo valor de b com o T que tera o valor de c
+Exit: (8) lists:append([c], [b], [c, b])
+10- creep Rev une com o ja concatenado [c,b].
+
+Exit: (7) invertelista([b, c], [c, b]) ? creep
+11- E depois une rev com R da 2 instancia
+
+Call: (7) lists:append([c, b], [a], _G347) ? creep
+12- E por ultimo na 1 instancia  ele concatena H=a e T =[c,b].
+
+Exit: (7) lists:append([c, b], [a], [c, b, a]) ? creep
+13- e Rev passa ter valor de [c,b,a].
+
+Exit: (6) invertelista([a, b, c], [c, b, a]) ? creep
+14-E une rev com o R da 1 instancia.
+
+X = [c, b, a]. E une R que ja possui a resposta com X que foi usado para obter a resposta da lista invertida
+
+Observe que esse processo é muito longo podendo ser simplificado atraves do uso de uma variavel que funcionará como um acumulador.
+Trace da Forma2
+Código:
+    Forma2:
+    invertelista2([ ],L,L).
+    invertelista2([H|T],Acc,Rev):-
+        invertelista2(T,[H|Acc],Rev).
+
+]  ?- invertelista2([a,b,c],Acc,X).
+Call: (6) invertelista2([a, b, c], _G2790, _G2791) ?
+1-Primeiro ele chama a regra  invertelista2.Na instancia 1 na lista H=[a] T=[b,c] e acc=[] Rev=[].
+
+Call: (7) invertelista2([b, c], [a|_G2790], _G2791) ? creep
+2- Ele arranca o primeiro elemento da lista e põe no acumulador na primeira instancia
+quando a regra e chamada novamente T=[b,c] é partido e na 2 instancia H=[b] t=[c] e acc=[a] Rev []  .
+
+Call: (8) invertelista2([c], [b, a|_G2790], _G2791) ?
+3-Novamente, na 3 instancia T=[c] da instancia anterior sera partido e na terceira instancia
+H=[c], T=[] acc=[b,a]Rev [] .
+
+Call: (9) invertelista2([], [c, b, a|_G2790], _G2791) ?
+4- Como anteriormente o primeiro elemento [c] e T=[] e quando ele chama  a regra novamente
+ele esbarra  no criterio de parada.
+
+Exit: (9) invertelista2([], [c, b, a|_G2790], [c, b, a|_G2790])
+5-No criterio de parada ele atribui a lista ja invertida a Rev, pois no criterio de parada
+se tem ([],L,L) ou seja Acc=L e L=Rev dai em diante Rev nao e mais uma variavel vazia e ai ele volta atribuindo a lista invertida ao Rev das instancias
+anteriores, quando ele faz isso ele vai esvaziando o acumulador.
+
+Exit: (8) invertelista2([c], [b, a|_G2790], [c, b, a|_G2790]) ?
+6- E ai ele volta fechando as instancias devolvendo oultimo elemento arrancado.Aqui
+ele fecha terceira instancia quando H=[c] t=[] mas Rev a partir daqui nao esta mais vazia Rev[c,b,a].
+
+Exit: (7) invertelista2([b, c], [a|_G2790], [c, b, a|_G2790]) ?
+7-Fecha a segunda instancia quando H=[b] T=[c] Rev[c,b,a].
+
+Exit: (6) invertelista2([a, b, c], _G2790, [c, b, a|_G2790]) ?
+8- Fecha a primeira quando H=[a] T=[b,c] Rev[c,b,a]
+
+X = [c, b, a|Acc].
+E ai ele devolve o valor de Rev=[c,b,a]--> X=Rev--> X=[c,b,a]
+
+O que vai acontecendo é:
+Lista: [a,b,c]                Accumulador: []             Rev[]
+Lista: [b,c]                  Acumulador:  [a]            Rev[]
+Lista: [c]                    Accumulador: [b,a]          Rev[]
+Lista: []                     Accumulador: [c,b,a]        Rev[]
+Lista: []                     Accumulador: [c,b,a]        Rev[c,b,a]
+Lista: [c]                    Accumulador: [b,a]          Rev[c,b,a]
+Lista: [b,c]                  Acumulador:  [a]            Rev[c,b,a]
+Lista: [a,b,c]                Accumulador: []             Rev[c,b,a]
+
+
+
+Como pode ser visto atraves do trace de ambas as formas, a forma 2 é menor,mais eficiente e portando a mais conveniente para ser usada,principalmente
+em códigos maiores em que se deseja maior velocidade eeficiencia do codigo.
+
